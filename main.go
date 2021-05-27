@@ -11,7 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var configPath = flag.String("config", "config", "Path to config file in yaml format")
+var configPath = flag.String("config", "config.yml", "Path to config file in yaml format")
 
 type Config struct {
 	PageID string `yaml:"page_id"`
