@@ -15,7 +15,8 @@ jobs:
 
       - name: Get TAG env
         run: |
-          echo ${{ github.ref }}
+          echo ${{ github.event.ref_type }}
+          
           echo ${{ github.ref }} > ref.txt 
           tag=`sed -E "s/.*v(.*)/\1/g" ref.txt`
           echo "tag=$tag" >> $GITHUB_ENV
