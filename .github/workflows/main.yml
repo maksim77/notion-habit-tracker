@@ -33,7 +33,7 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-    if: ${{ env.GITHUB_EVENT_NAME }} == "create"
+    if: github.event_name == 'push'
     steps:
       - name: Build
         if: ${{ github.event.ref_type }} == "tag"
