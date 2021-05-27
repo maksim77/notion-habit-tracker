@@ -15,8 +15,7 @@ jobs:
 
       - name: Get TAG env
         run: |
-          echo ${{ github.event.create}}
-          
+          echo ${{ github.event.push}}
           echo ${{ github.ref }} > ref.txt 
           tag=`sed -E "s/.*v(.*)/\1/g" ref.txt`
           echo "tag=$tag" >> $GITHUB_ENV
@@ -30,6 +29,7 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    if: ${{ github.event.create}}
     steps:
       - name: Build
         if: ${{ github.event.ref_type }} == "tag"
