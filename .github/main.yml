@@ -1,0 +1,49 @@
+name: main
+on:
+  create:
+    tags:
+      - v*
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16.3
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: Get TAG env
+        run: |
+          echo ${{ github.ref }} > ref.txt 
+          tag=`sed -E "s/.*v(.*)/\1/g" ref.txt`
+          echo "::set-env name=tag::$tag"
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+
+      - name: test
+        run: go test -v .
+
+      - name: Build
+        if: ${{ github.event.ref_type }} == "tag"
+        run: |
+          go build .
+          go get github.com/mitchellh/gox
+          /home/runner/go/bin/gox -osarch="linux/amd64 linux/arm darwin/amd64 windows/amd64" --output "build/{{ .Dir }}_{{.OS}}_{{.Arch}}"
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/notion-habit-tracker_darwin_amd64
+            build/notion-habit-tracker_windows_amd64.exe
+            build/notion-habit-tracker_linux_amd64
+            build/notion-habit-tracker_linux_arm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+
