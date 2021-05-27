@@ -1,8 +1,5 @@
 name: main
-on:
-  create:
-    tags:
-      - v*
+on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
